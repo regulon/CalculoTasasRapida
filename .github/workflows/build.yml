@@ -18,12 +18,20 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+      - name: Install system dependencies
         run: |
           sudo apt update
-          sudo apt install -y openjdk-17-jdk build-essential libsqlite3-dev zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget curl llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev autoconf libtool pkg-config zlib1g-dev libncurses5-dev libgdbm-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev libbz2-dev
+          sudo apt install -y openjdk-17-jdk build-essential libsqlite3-dev zlib1g-dev \
+            libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev \
+            wget curl llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev \
+            liblzma-dev autoconf libtool pkg-config libbz2-dev zip unzip
           pip install --upgrade pip setuptools wheel
           pip install buildozer cython "kivy<3.0.0"
+
+      - name: Accept Android SDK Licenses & Fix AIDL
+        run: |
+          mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
+          yes | sdkmanager --sdk_root=$HOME/.buildozer/android/platform/android-sdk --licenses || true
 
       - name: Build APK with Buildozer
         run: |
