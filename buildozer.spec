@@ -36,6 +36,12 @@ android.api = 33
 # (int) Minimum API required
 android.minapi = 21
 
+# (str) Android NDK version to use
+android.ndk = 25b
+
+# (bool) If True, then accept all SDK licenses automatically
+android.accept_sdk_licenses = True
+
 # (bool) Allow cleartext network traffic (necesario para la conexión del WebView)
 android.uses_cleartext_traffic = True
 
