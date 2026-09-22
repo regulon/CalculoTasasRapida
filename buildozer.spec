@@ -42,6 +42,9 @@ android.minapi = 21
 # (str) Android NDK version to use
 android.ndk = 25b
 
+# (str) Build tools version to use (fuerza una versión estable existente)
+android.build_tools_version = 33.0.2
+
 # (bool) If True, then accept all SDK licenses automatically
 android.accept_sdk_licenses = True
 
