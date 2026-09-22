@@ -30,8 +30,8 @@ fullscreen = 0
 # (list) Permissions
 android.permissions = INTERNET,ACCESS_NETWORK_STATE
 
-# (int) Target Android API, should be as high as possible.
-android.api = 33
+# (str) Android build-tools version to use
+android.build_tools_version = 33.0.2
 
 # (int) Minimum API required
 android.minapi = 21

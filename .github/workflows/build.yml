@@ -34,6 +34,12 @@ jobs:
           pip install --upgrade pip setuptools wheel
           pip install buildozer cython "kivy<3.0.0"
 
+      - name: Auto-accept Android SDK Licenses
+        run: |
+          mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
+          printf "24333f8a637b3749d107399279149cb12d72132a\n84831b9409646a7d8f447f119d492211915014bd\nd975 crystall18f8e815610850f2f3d61168f86" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+          printf "84831b9409646a7d8f447f119d492211915014bd" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-preview-license
+
       - name: Build APK with Buildozer
         run: |
           buildozer -v android debug
