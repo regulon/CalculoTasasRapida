@@ -19,9 +19,6 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
@@ -37,14 +34,9 @@ jobs:
           pip install --upgrade pip setuptools wheel
           pip install buildozer cython "kivy<3.0.0"
 
-      - name: Accept Android SDK Licenses & Install Build-Tools
-        run: |
-          yes | sdkmanager --licenses || true
-          sdkmanager "build-tools;34.0.0" "platforms;android-34" "platform-tools"
-
       - name: Build APK with Buildozer
         run: |
-          buildozer -v android debug
+          yes | buildozer -v android debug
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
