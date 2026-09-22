@@ -33,6 +33,9 @@ android.permissions = INTERNET,ACCESS_NETWORK_STATE
 # (str) Android build-tools version to use
 android.build_tools_version = 33.0.2
 
+# (android.api) API number to target
+android.api = 33
+
 # (int) Minimum API required
 android.minapi = 21
 
