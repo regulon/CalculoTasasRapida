@@ -58,3 +58,7 @@ log_level = 2
 
 # (int) Display warning if buildozer is run as root (0 = error, 1 = warning)
 warn_on_root = 1
+
+# Forzar a Buildozer a usar las cmdline-tools modernas
+android.sdk_path = 
+android.ndk_path =
