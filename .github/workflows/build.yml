@@ -8,17 +8,16 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Build APK with Buildozer
-        uses: ArtemSpath/buildozer-action@v1.2
+        uses: ArtemSBulgakov/buildozer-action@v1
         with:
           command: buildozer android debug
-          subpath: '.'
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
