@@ -45,11 +45,15 @@ android.ndk = 25b
 # (bool) If True, then accept all SDK licenses automatically
 android.accept_sdk_licenses = True
 
-# (bool) Allow cleartext network traffic (necesario para la conexión del WebView)
+# (bool) Allow cleartext network traffic
 android.uses_cleartext_traffic = True
 
 # (str) The Android arch to build for
 android.archs = arm64-v8a, armeabi-v7a
+
+# Apuntar al SDK/NDK nativos de GitHub Actions
+android.sdk_path = /usr/local/lib/android/sdk
+android.ndk_path = /usr/local/lib/android/sdk/ndk/25.2.9519653
 
 [buildozer]
 
@@ -58,7 +62,3 @@ log_level = 2
 
 # (int) Display warning if buildozer is run as root (0 = error, 1 = warning)
 warn_on_root = 1
-
-# Forzar a Buildozer a usar las cmdline-tools modernas
-android.sdk_path = 
-android.ndk_path =
