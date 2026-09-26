@@ -54,10 +54,16 @@ jobs:
       - name: Install Python Dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          pip install buildozer cython
+          pip install https://github.com/kivy/buildozer/archive/master.zip
+          pip install cython
 
-      - name: Accept Android SDK Licenses
+      - name: Fix Android SDK Tools Symlink & Accept Licenses
         run: |
+          # 1. Crear enlace simbólico de la ruta antigua (tools/bin) a la moderna (cmdline-tools/latest/bin)
+          sudo mkdir -p /usr/local/lib/android/sdk/tools
+          sudo ln -sf /usr/local/lib/android/sdk/cmdline-tools/latest/bin /usr/local/lib/android/sdk/tools/bin
+
+          # 2. Pre-aceptar todas las licencias del SDK
           yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
       - name: Build with Buildozer
