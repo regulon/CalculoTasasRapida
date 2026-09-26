@@ -51,17 +51,32 @@ jobs:
             zip \
             unzip
 
-      - name: Install Python Dependencies (Master Branch)
+      - name: Install Python Dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
           pip install https://github.com/kivy/buildozer/archive/master.zip
           pip install cython
 
-      - name: Pre-accept Android SDK Licenses
+      - name: Pre-install Android Command Line Tools & Symlinks
         run: |
-          mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
-          printf "24333f8a637bba39ea846d273f3091529b8282fd\n89330172875f1fb41130205a1435728362678129\ne6750261060f9915146e676179a4234f2a3b3b28\n84831b9409646a578f447fd3bc02d14d990cc83d\n791244e692b535d863051a9162a9f26373829239\nd56f5187479451eabf01fb78af6dfcb131a6481e\n24333f8a637bba39ea846d273f3091529b8282fd" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
-          printf "84831b9409646a578f447fd3bc02d14d990cc83d" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-preview-license
+          # 1. Crear directorios para el SDK
+          SDK_DIR=$HOME/.buildozer/android/platform/android-sdk
+          mkdir -p $SDK_DIR/cmdline-tools
+
+          # 2. Descargar e instalar cmdline-tools modernas
+          curl -o cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q cmdline-tools.zip
+          mv cmdline-tools $SDK_DIR/cmdline-tools/latest
+          rm -f cmdline-tools.zip
+
+          # 3. Solución al error: Crear redirección (symlink) de la ruta obsoleta a la ruta moderna
+          mkdir -p $SDK_DIR/tools
+          ln -s $SDK_DIR/cmdline-tools/latest/bin $SDK_DIR/tools/bin
+
+          # 4. Pre-aceptar licencias del SDK
+          mkdir -p $SDK_DIR/licenses
+          printf "24333f8a637bba39ea846d273f3091529b8282fd\n89330172875f1fb41130205a1435728362678129\ne6750261060f9915146e676179a4234f2a3b3b28\n84831b9409646a578f447fd3bc02d14d990cc83d\n791244e692b535d863051a9162a9f26373829239\nd56f5187479451eabf01fb78af6dfcb131a6481e\n24333f8a637bba39ea846d273f3091529b8282fd" > $SDK_DIR/licenses/android-sdk-license
+          printf "84831b9409646a578f447fd3bc02d14d990cc83d" > $SDK_DIR/licenses/android-sdk-preview-license
 
       - name: Build with Buildozer
         run: |
