@@ -57,33 +57,38 @@ jobs:
           pip install https://github.com/kivy/buildozer/archive/master.zip
           pip install cython
 
-      - name: Pre-install Android SDK Components
+      - name: Setup Android SDK and Legacy Wrapper
         run: |
-          # 1. Definir la ruta exacta del SDK que usará Buildozer
           SDK_DIR=$HOME/.buildozer/android/platform/android-sdk
           mkdir -p $SDK_DIR/cmdline-tools
 
-          # 2. Instalar Command Line Tools en la estructura oficial
+          # 1. Instalar cmdline-tools oficiales
           curl -o cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
           unzip -q cmdline-tools.zip
           mv cmdline-tools $SDK_DIR/cmdline-tools/latest
           rm -f cmdline-tools.zip
 
-          # 3. Aceptar licencias previamente
+          # 2. Preinstalar componentes requeridos
           mkdir -p $SDK_DIR/licenses
           yes | $SDK_DIR/cmdline-tools/latest/bin/sdkmanager --sdk_root=$SDK_DIR --licenses || true
-
-          # 4. PREINSTALAR los componentes necesarios para que Buildozer NUNCA invoque sdkmanager
           $SDK_DIR/cmdline-tools/latest/bin/sdkmanager --sdk_root=$SDK_DIR "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
-      - name: Build with Buildozer
-        run: |
-          buildozer android debug
-        env:
-          ACCEPT_SDK_LICENSES: 1
+          # 3. Crear el ejecutable wrapper en tools/bin/sdkmanager
+          mkdir -p $SDK_DIR/tools/bin
+          cat << 'EOF' > $SDK_DIR/tools/bin/sdkmanager
+          #!/bin/bash
+          exec $HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/.buildozer/android/platform/android-sdk "$@"
+          EOF
+                    chmod +x $SDK_DIR/tools/bin/sdkmanager
 
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: package-apk
-          path: bin/*.apk
+                - name: Build with Buildozer
+                  run: |
+                    buildozer android debug
+                  env:
+                    ACCEPT_SDK_LICENSES: 1
+
+                - name: Upload APK Artifact
+                  uses: actions/upload-artifact@v4
+                  with:
+                    name: package-apk
+                    path: bin/*.apk
