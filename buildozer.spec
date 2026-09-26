@@ -52,8 +52,8 @@ android.uses_cleartext_traffic = True
 android.archs = arm64-v8a, armeabi-v7a
 
 # Apuntar al SDK/NDK nativos de GitHub Actions
-android.sdk_path = /usr/local/lib/android/sdk
-android.ndk_path = /usr/local/lib/android/sdk/ndk/25.2.9519653
+android.sdk_path = 
+android.ndk_path = 
 
 [buildozer]
 

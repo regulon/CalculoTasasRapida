@@ -57,22 +57,30 @@ jobs:
           pip install https://github.com/kivy/buildozer/archive/master.zip
           pip install cython
 
-      - name: Fix Android SDK Tools Symlink & Accept Licenses
+      - name: Setup Custom Android SDK Command Line Tools
         run: |
-          # 1. Crear enlace simbólico de la ruta antigua (tools/bin) a la moderna (cmdline-tools/latest/bin)
-          sudo mkdir -p /usr/local/lib/android/sdk/tools
-          sudo ln -sf /usr/local/lib/android/sdk/cmdline-tools/latest/bin /usr/local/lib/android/sdk/tools/bin
+          SDK_DIR=$HOME/.buildozer/android/platform/android-sdk
+          mkdir -p $SDK_DIR/cmdline-tools
 
-          # 2. Pre-aceptar todas las licencias del SDK
-          yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
+          # Descargar e instalar commandlinetools de Android en la estructura esperada por Google
+          curl -o cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q cmdline-tools.zip
+          mv cmdline-tools $SDK_DIR/cmdline-tools/latest
+          rm -f cmdline-tools.zip
+
+          # Crear symlink de la ruta antigua (tools/bin) apuntando al ejecutable de cmdline-tools
+          mkdir -p $SDK_DIR/tools
+          ln -sf $SDK_DIR/cmdline-tools/latest/bin $SDK_DIR/tools/bin
+
+          # Pre-aceptar licencias del SDK en el SDK local de Buildozer
+          mkdir -p $SDK_DIR/licenses
+          yes | $SDK_DIR/cmdline-tools/latest/bin/sdkmanager --sdk_root=$SDK_DIR --licenses || true
 
       - name: Build with Buildozer
         run: |
           buildozer android debug
         env:
           ACCEPT_SDK_LICENSES: 1
-          ANDROID_HOME: /usr/local/lib/android/sdk
-          ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
