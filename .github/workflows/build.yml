@@ -56,6 +56,12 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           pip install buildozer cython
 
+      - name: Accept Android SDK Licenses Preemptively
+        run: |
+          mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
+          printf "24333f8a637bba39ea846d273f3091529b8282fd\n89330172875f1fb41130205a1435728362678129\ne6750261060f9915146e676179a4234f2a3b3b28\n84831b9409646a578f447fd3bc02d14d990cc83d\n791244e692b535d863051a9162a9f26373829239\nd56f5187479451eabf01fb78af6dfcb131a6481e\n24333f8a637bba39ea846d273f3091529b8282fd" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+          printf "84831b9409646a578f447fd3bc02d14d990cc83d" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-preview-license
+
       - name: Build with Buildozer
         run: |
           buildozer android debug
