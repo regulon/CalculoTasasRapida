@@ -55,7 +55,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip setuptools wheel
           pip install https://github.com/kivy/buildozer/archive/master.zip
-          pip install cython
+          pip install cython<3.0.0
 
       - name: Setup Android SDK and Legacy Wrapper
         run: |
