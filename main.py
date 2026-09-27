@@ -1,6 +1,10 @@
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
-from kivy import platform
+from kivy.uix.label import Label
+from kivy.utils import platform
+
+import os
+import openpyxl
 
 # Dirección de tu aplicación web en Streamlit Cloud
 URL_STREAMLIT = "https://calculotasasrapida-deposito.streamlit.app/"
@@ -19,13 +23,27 @@ else:
     def run_on_ui_thread(func):
         return func
 
+    # Variables asignadas a None para evitar NameError en Windows
+    WebView = None
+    WebViewClient = None
+    WebSettings = None
+    CookieManager = None
+    activity = None
+
 
 class WebApp(App):
 
     def build(self):
         if platform == "android":
             self.open_webview()
-        return BoxLayout()
+            return BoxLayout()
+        else:
+            # En Windows muestra una interfaz de prueba para confirmar que el código funciona
+            layout = BoxLayout(orientation='vertical')
+            layout.add_widget(
+                Label(text=f"Modo Escritorio ({platform})\nCargando URL:\n{URL_STREAMLIT}")
+            )
+            return layout
 
     @run_on_ui_thread
     def open_webview(self):
