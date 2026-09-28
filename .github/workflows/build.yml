@@ -87,11 +87,6 @@ jobs:
           rm -rf .buildozer
           rm -rf bin
 
-          git add buildozer.spec
-          git add .github/workflows/build.yml
-          git commit -m "Ajustar Buildozer y Android SDK"
-          git push origin main
-
       - name: Build with Buildozer
         run: |
           buildozer android debug
