@@ -74,6 +74,11 @@ jobs:
           pip --version
           buildozer --version
 
+      - name: Clean Buildozer
+        run: |
+          rm -rf .buildozer
+          rm -rf bin
+
       - name: Build APK
         env:
           ACCEPT_SDK_LICENSES: "1"
