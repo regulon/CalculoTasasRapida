@@ -17,13 +17,13 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: temurin
+          java-version: "17"
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install System Dependencies
         run: |
@@ -53,45 +53,66 @@ jobs:
 
       - name: Install Python Dependencies
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install setuptools wheel
+          python -m pip install "pip<25"
+          python -m pip install "setuptools<70"
+          python -m pip install "wheel<0.45"
           python -m pip install "cython<3"
           python -m pip install buildozer==1.5.0
 
-
-      - name: Setup Android SDK and Legacy Wrapper
+      - name: Setup Android SDK
         run: |
           SDK_DIR=$HOME/.buildozer/android/platform/android-sdk
+
           mkdir -p $SDK_DIR/cmdline-tools
 
-          # 1. Instalar cmdline-tools oficiales
-          curl -o cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          curl -L \
+            https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip \
+            -o cmdline-tools.zip
+
           unzip -q cmdline-tools.zip
+
           mv cmdline-tools $SDK_DIR/cmdline-tools/latest
+
           rm -f cmdline-tools.zip
 
-          # 2. Preinstalar componentes requeridos
           mkdir -p $SDK_DIR/licenses
-          yes | $SDK_DIR/cmdline-tools/latest/bin/sdkmanager --sdk_root=$SDK_DIR --licenses || true
-          $SDK_DIR/cmdline-tools/latest/bin/sdkmanager --sdk_root=$SDK_DIR "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
-          # 3. Crear el wrapper de sdkmanager sin errores de interpretación bash
+          yes | \
+            $SDK_DIR/cmdline-tools/latest/bin/sdkmanager \
+            --sdk_root=$SDK_DIR \
+            --licenses || true
+
+          $SDK_DIR/cmdline-tools/latest/bin/sdkmanager \
+            --sdk_root=$SDK_DIR \
+            "platform-tools" \
+            "platforms;android-33" \
+            "build-tools;33.0.2"
+
           mkdir -p $SDK_DIR/tools/bin
-          printf '#!/bin/bash\nexec %s/cmdline-tools/latest/bin/sdkmanager --sdk_root=%s "$@"\n' "$SDK_DIR" "$SDK_DIR" > $SDK_DIR/tools/bin/sdkmanager
+
+          cat > $SDK_DIR/tools/bin/sdkmanager << EOF
+          #!/bin/bash
+          exec $SDK_DIR/cmdline-tools/latest/bin/sdkmanager --sdk_root=$SDK_DIR "\$@"
+          EOF
+
           chmod +x $SDK_DIR/tools/bin/sdkmanager
 
-      
-
-      - name: Clean Buildozer
+      - name: Clean Buildozer Cache
         run: |
           rm -rf .buildozer
           rm -rf bin
 
-      - name: Build with Buildozer
+      - name: Show Versions
+        run: |
+          python --version
+          pip --version
+          buildozer --version
+
+      - name: Build APK
+        env:
+          ACCEPT_SDK_LICENSES: "1"
         run: |
           buildozer android debug
-        env:
-          ACCEPT_SDK_LICENSES: 1
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4

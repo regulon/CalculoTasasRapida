@@ -31,7 +31,7 @@ source.include_exts = py,png,jpg,kv,atlas
 
 # (list) List of exclusions using pattern matching
 # Do not prefix with './'
-#source.exclude_patterns = license,images/*/*.jpg
+source.exclude_patterns = app.py,*.md
 
 # (str) Application versioning (method 1)
 version = 0.1
@@ -42,7 +42,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,pyjnius,openpyxl
+requirements = python3,kivy==2.3.0,pyjnius,openpyxl==3.1.5,requests==2.31.0,urllib3,idna,certifi
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -335,7 +335,7 @@ android.allow_backup = True
 #p4a.fork = kivy
 
 # (str) python-for-android branch to use, defaults to master
-#p4a.branch = develop
+p4a.branch = develop
 
 # (str) python-for-android specific commit to use, defaults to HEAD, must be within p4a.branch
 #p4a.commit = HEAD
